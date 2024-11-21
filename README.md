@@ -10,7 +10,10 @@ Program "Sistem Manajemen Layanan Laundry" adalah aplikasi yang dirancang untuk 
 - Manajemen pemesanan laundry
 - Menghitung total tagihan pesanan
 
-# Diagram Alir
+# Diagram Alir (1)
 ![8_Flowchart_Sistem Manajemen Layanan Laundry](https://github.com/user-attachments/assets/c4e80fbf-c338-4f8b-b7d8-9df7ad4b34c8)
 
-Flowchart ini dimulai dengan melakukan login, lalu pengguna diarahkan ke Menu Utama yang memiliki beberapa opsi: "Tambah Pesanan" untuk menambahkan data pesanan baru, "Tampilkan Semua Pesanan" untuk melihat daftar pesanan, "Cetak Tagihan" untuk mencetak tagihan pelanggan berdasarkan jenis pakaian dan layanan, serta "Logout" untuk menyelesaikan program. Ketika menambah pesanan, pengguna mengisi data seperti nama pelanggan, jenis pakaian, berat, jenis layanan, dan estimasi waktu selesai. Ketika ingin menyetak tagihan, pengguna mengisi data nama pelangan dan total tagihan akan tertera.
+# Diagram Alir Revisi (2)
+![8_Flowchart_Sistem_Manajemen_Layanan_Laundry](https://github.com/Fatharani21/Sistem-Manajemen-Layanan-Laundry/blob/main/progress%20flowchart%20(2).drawio.png?raw=true)
+
+Flowchart ini dimulai dengan melakukan login, lalu pengguna diarahkan ke Menu Utama yang memiliki beberapa opsi: "Tambah Pesanan" untuk menambahkan data pesanan baru. Pengguna mengisi data seperti nama pelanggan, jenis pakaian, berat, jenis layanan, dan estimasi waktu selesai. "Tampilkan Semua Pesanan" untuk melihat daftar pesanan. "Cetak Tagihan" untuk mencetak tagihan pelanggan berdasarkan jenis pakaian dan layanan. Pengguna mengisi data nama pelangan dan total tagihan akan tertera. "Logout" untuk menyelesaikan program.  
