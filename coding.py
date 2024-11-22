@@ -63,9 +63,9 @@ def menu_login():
         username = username_entry.get()
         password = password_entry.get()
 
-        if username == "admin" and password == "rahasia":  # Login default untuk admin
-            messagebox.showinfo("Login berhasil", "Selamat datang di Sistem Manajemen Laundry")
-            menu_admin()  # Pindah ke menu admin setelah login berhasil
+        if username == "admin" and password == "rahasia":  
+            messagebox.showinfo("Login berhasil", "Selamat datang di Swift Clean")
+            menu_admin()  
         else:
             messagebox.showerror("Login gagal", "Username atau password salah")
 
@@ -93,7 +93,7 @@ def logout():
     root.quit()  # Menutup aplikasi setelah logout
     
 def buat_id_pesanan():
-    data = muat_data()  # Ambil data pesanan dari sumber data
+    data = muat_data()  
     # Hanya ambil ID pesanan yang valid (numerik)
     valid_ids = [id_pesanan for id_pesanan in data.keys() if id_pesanan.isdigit()]
     
@@ -102,7 +102,7 @@ def buat_id_pesanan():
     else:
         nomor_terakhir = 0  # Jika tidak ada ID pesanan sebelumnya, mulai dari 0
     
-    # ID pesanan berikutnya dengan format 3 digit (contoh: 001, 002, ...)
+    # ID pesanan berikutnya dengan format 3 digit 
     id_baru = str(nomor_terakhir + 1).zfill(3)
     
     return id_baru
@@ -170,7 +170,7 @@ def tampilkan_tambah_pesanan():
 
         # Validasi nama pelanggan
         if not nama_pelanggan.isalpha():
-            messagebox.showerror("Error", "Nama pelanggan hanya boleh berupa huruf!")
+            messagebox.showerror("Error", "Nama pelanggan hanya bisa berupa huruf!")
             return
 
         # Validasi email
@@ -179,13 +179,13 @@ def tampilkan_tambah_pesanan():
             return
 
         # Validasi apakah jenis pakaian sudah dipilih terlebih dahulu
-        jenis_pakaian_terpilih = False  # Flag untuk memeriksa apakah jenis pakaian dipilih
+        jenis_pakaian_terpilih = False  
         for jenis, var in jenis_pakaian_values.items():
-            if var.get():  # Jika jenis pakaian dipilih
-                jenis_pakaian_terpilih = True  # Tandai bahwa jenis pakaian dipilih
+            if var.get():  
+                jenis_pakaian_terpilih = True  
                 berat = berat_entries[jenis].get()
-                if not berat.isdigit():  # Validasi berat harus berupa angka
-                    messagebox.showerror("Error", f"Berat untuk {jenis} harus berupa angka!")
+                if not berat.isdigit():
+                    messagebox.showerror("Error", f"Berat {jenis} harus berupa angka!")
                     return
                 pesanan_baru.append({
                     "jenis_pakaian": jenis,
@@ -194,8 +194,8 @@ def tampilkan_tambah_pesanan():
                     "estimasi_waktu": estimasi_waktu
                 })
     
-        if not jenis_pakaian_terpilih:  # Jika tidak ada jenis pakaian yang dipilih
-            messagebox.showerror("Error", "Pilih jenis pakaian terlebih dahulu!")
+        if not jenis_pakaian_terpilih:  
+            messagebox.showerror("Error", "Jenis pakaian harus terisi!")
             return
 
         # Validasi jenis layanan
@@ -208,7 +208,7 @@ def tampilkan_tambah_pesanan():
             # Buat ID Pesanan Baru
             id_pesanan = buat_id_pesanan()
             
-                        # Menambahkan pesanan baru dengan ID pesanan
+            # Menambahkan pesanan baru dengan ID pesanan
             pesanan[id_pesanan] = {
                 "nama_pelanggan": nama_pelanggan,
                 "email": email_pelanggan,
@@ -222,9 +222,9 @@ def tampilkan_tambah_pesanan():
             "items": pesanan_baru
         }
 
-        simpan_data(pesanan)  # Simpan data yang sudah diupdate
+        simpan_data(pesanan)  
         messagebox.showinfo("Pesanan berhasil", f"Pesanan {id_pesanan} berhasil ditambahkan!")
-        menu_admin()  # Kembali ke menu admin
+        menu_admin()  
        
     # Tombol simpan
     frame_tombol = tk.Frame(root, pady=10)
@@ -241,7 +241,7 @@ def tampilkan_tambah_pesanan():
 # Membuat window utama
 root = tk.Tk()
 root.title("Swift Clean Laundry Management System")
-root.geometry("600x600")  # Ukuran window
+root.geometry("600x600")  
 
 tampilkan_halaman_awal()
 
