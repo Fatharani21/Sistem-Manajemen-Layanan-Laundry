@@ -246,3 +246,316 @@ root.geometry("600x600")
 tampilkan_halaman_awal()
 
 root.mainloop()
+
+def tampilkan_pesanan():
+    clear_window(root) 
+    
+    # Membuat canvas dan scrollbar untuk scrollable area
+    canvas = tk.Canvas(root)
+    scrollbar = tk.Scrollbar(root, orient="vertical", command=canvas.yview)
+    frame_scrollable = tk.Frame(canvas)
+
+    frame_scrollable.bind(
+        "<Configure>",
+        lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+    )
+
+    canvas.create_window((0, 0), window=frame_scrollable, anchor="nw")
+    canvas.config(yscrollcommand=scrollbar.set)
+    
+    bg_image = Image.open(r"C:\Users\listi\OneDrive\Desktop\anaa\Images\yyyy.png")
+    bg_image = ImageTk.PhotoImage(bg_image)
+    
+    canvas.create_image(0, 0, image=bg_image, anchor="nw")
+     
+    # Menempatkan canvas dan scrollbar di jendela
+    canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+    
+    canvas.image = bg_image
+    
+    # Menambahkan dukungan scroll untuk touchpad (dua jari)
+    def on_mouse_wheel(event):
+        if event.delta:  # Untuk Windows dan Mac
+            canvas.yview_scroll(-1 * (event.delta // 120), "units")
+        elif event.num in (4, 5):  # Untuk Linux (event num 4=up, 5=down)
+            canvas.yview_scroll(-1 if event.num == 4 else 1, "units")
+
+    canvas.bind_all("<MouseWheel>", on_mouse_wheel)  # Windows dan MacOS
+    canvas.bind_all("<Button-4>", on_mouse_wheel)   # Linux (scroll up)
+    canvas.bind_all("<Button-5>", on_mouse_wheel)   # Linux (scroll down)
+
+    # Judul (centered)
+    title_frame = tk.Frame(frame_scrollable)
+    title_frame.pack(fill=tk.X, pady=20)
+    tk.Label(title_frame, text="Daftar Pesanan", font=("Helvetica", 20, "bold")).pack(anchor="center")
+    
+    # Memuat data pesanan
+    pesanan = muat_data()
+    
+    # Menampilkan setiap pesanan pelanggan
+    for id_pesanan, data in pesanan.items():
+        # Frame untuk ID Pesanan dan nama pelanggan
+        frame_pesanan = tk.Frame(frame_scrollable, padx=20)
+        frame_pesanan.pack(fill=tk.X, expand=True)
+        # ID Pesanan
+        tk.Label(
+            frame_pesanan,
+            text=f"ID Pesanan: {id_pesanan}",
+            font=("Helvetica", 14, "bold"),
+            anchor="w"
+        ).grid(row=0, column=0, sticky="w", columnspan=2, pady=5)
+
+        # Nama pelanggan di bawah ID Pesanan
+        tk.Label(
+            frame_pesanan,
+            text=f"Nama: {data['nama_pelanggan']} ({data['email']})",
+            font=("Helvetica", 12, "bold"),  # Bold untuk nama
+            anchor="w"
+            ).grid(row=1, column=0, sticky="w", columnspan=2, pady=5)
+
+    
+        # Menampilkan item pesanan
+        for item in data.get("items", []):
+            frame_item = tk.Frame(frame_scrollable, padx=20, pady=10)
+            frame_item.pack(fill=tk.X, expand=True)
+            tk.Label(frame_item, text=f"{item['jenis_pakaian']} - Berat: {item['berat']}kg, Layanan: {item['jenis_layanan']}, Estimasi: {item['estimasi_waktu']}",
+                     font=("Helvetica", 12)).pack()
+        
+        # Header untuk daftar item
+        tk.Label(
+            frame_pesanan,
+            text="Daftar Item:",
+            font=("Helvetica", 12, "italic"),
+            anchor="w"
+        ).grid(row=2, column=0, sticky="w", columnspan=2, pady=5)
+
+        # Menampilkan daftar item dengan grid
+        for idx, item in enumerate(data.get("items", []), start=3):  # Mulai dari baris ke-3
+            tk.Label(
+                frame_pesanan,
+                text=f"• {item['jenis_pakaian']} - Berat: {item['berat']}kg",
+                font=("Helvetica", 12),
+                anchor="w"
+            ).grid(row=idx, column=0, sticky="w", pady=2)
+            tk.Label(
+                frame_pesanan,
+                text=f"Layanan: {item['jenis_layanan']}, Estimasi: {item['estimasi_waktu']}",
+                font=("Helvetica", 12),
+                anchor="w"
+            ).grid(row=idx, column=1, sticky="w", padx=20, pady=2)
+
+    # Tombol kembali ke menu
+    frame_tombol = tk.Frame(frame_scrollable, pady=20)
+    frame_tombol.pack(fill=tk.X)
+    tk.Button(
+        frame_tombol,
+        text="Kembali ke Menu",
+        font=("Helvetica", 14),
+        command=menu_admin 
+    ).pack(anchor="center")
+    
+    
+from PIL import Image, ImageDraw, ImageFont
+
+def buat_gambar_struk(nama_file, id_pesanan, nama_pelanggan, tanggal_str, tanggal_estimasi, tagihan_text, total_tagihan):
+    width, height = 500, 800
+    img = Image.new("RGB", (width, height), "white")
+
+    draw = ImageDraw.Draw(img)
+        
+    # Font
+    font_path = "C:/Windows/Fonts/consola.ttf"  # Courier New atau Consolas
+    font_header = ImageFont.truetype(font_path, 18)
+    font_body = ImageFont.truetype(font_path, 14)
+    
+    # Header
+    y = 40  # Awal posisi Y
+    header_text = "Swift Clean Laundry"
+    sub_header_text = "Struk Resmi Layanan Laundry"
+
+    # Hitung posisi X agar teks benar-benar berada di tengah
+    header_width = draw.textlength(header_text, font=font_header)
+    sub_header_width = draw.textlength(sub_header_text, font=font_body)
+
+    draw.text(((width - header_width) // 2, y), header_text, font=font_header, fill="black")
+    y += 30  # Jarak antar teks
+    draw.text(((width - sub_header_width) // 2, y), sub_header_text, font=font_body, fill="black")
+
+    # Garis pemisah atas (tebal)
+    y += 30
+    draw.line((20, y, width - 20, y), fill="black", width=2)
+
+    # Informasi pelanggan
+    y += 20
+    draw.text((20, y), f"ID Pesanan      : {id_pesanan}", font=font_body, fill="black")
+    y += 20
+    draw.text((20, y), f"Nama Pelanggan  : {nama_pelanggan}", font=font_body, fill="black")
+    y += 20
+    draw.text((20, y), f"Tanggal Tagihan : {tanggal_str}", font=font_body, fill="black")
+    y += 20
+    draw.text((20, y), f"Estimasi Selesai: {tanggal_estimasi}", font=font_body, fill="black")
+
+    # Garis pemisah sebelum tabel (tebal)
+    y += 30
+    draw.line((20, y, width - 20, y), fill="black", width=2)
+
+    # Header tabel
+    y += 20
+    draw.text((20, y), "|  Jenis Pakaian  |  Berat   |  Layanan |     Biaya    |", font=font_body, fill="black")
+    
+    # Garis pemisah tabel (biasa)
+    y += 20
+    draw.line((20, y, width - 20, y), fill="black", width=1)
+
+    # Isi tabel
+    y += 10  # Jarak kecil sebelum isi tabel
+    for line in tagihan_text.splitlines():
+        draw.text((20, y), line, font=font_body, fill="black")
+        y += 20  # Tambahkan jarak antar baris
+
+    # Garis pemisah sebelum total tagihan (panjang penuh)
+    y += 10
+    draw.line((20, y, width - 20, y), fill="black", width=1)
+
+    # Total tagihan
+    y += 20
+    draw.text((20, y), f"Total Tagihan   :                         Rp  {total_tagihan:,}", font=font_body, fill="black")
+
+    # Garis pemisah bawah (tebal)
+    y += 30
+    draw.line((20, y, width - 20, y), fill="black", width=2)
+
+    # Footer
+    y += 20
+    draw.text((width // 2 - 110, y), "Terima Kasih telah menggunakan", font=font_body, fill="black")
+    y += 20
+    draw.text((width // 2 - 80, y), "Swift Clean Laundry!", font=font_body, fill="black")
+
+    # Menyimpan gambar
+    img.save(nama_file)
+    print(f"Struk berhasil dibuat: {nama_file}")
+
+# Fungsi untuk mengirim email dengan lampiran gambar
+def kirim_email_dengan_gambar(nama_file, email_pelanggan):
+    msg = MIMEMultipart()
+    msg["From"] = "gajello66@gmail.com"
+    msg["To"] = email_pelanggan
+    msg["Subject"] = "Struk Laundry Anda"
+
+    # Tambahkan pesan teks
+    body = "Berikut adalah struk laundry Anda dalam format gambar."
+    msg.attach(MIMEText(body, "plain"))
+
+    # Lampirkan file gambar
+    with open(nama_file, "rb") as attachment:
+        part = MIMEBase("application", "octet-stream")
+        part.set_payload(attachment.read())
+        encoders.encode_base64(part)
+        part.add_header("Content-Disposition", f"attachment; filename={nama_file}")
+        msg.attach(part)
+
+    # Kirim email
+    with smtplib.SMTP("smtp.gmail.com", 587) as server:
+        server.starttls()
+        server.login("gajello66@gmail.com", "ogcz xnuk wwwc uecc")
+        server.sendmail(msg["From"], msg["To"], msg.as_string())
+
+# Modifikasi fungsi tampilkan_tagihan
+def tampilkan_tagihan():
+    clear_window(root)
+    
+    bg_image = Image.open(r"C:\Users\listi\OneDrive\Desktop\anaa\Images\cetak_tagihan.png")
+    bg_image = ImageTk.PhotoImage(bg_image)
+    
+    background_label = tk.Label(root, image=bg_image)
+    background_label.place(relwidth=1, relheight=1)
+    
+    id_pesanan_entry = tk.Entry(root, font=("Helvetica", 14))
+    id_pesanan_entry.pack(pady=10)
+    id_pesanan_entry.place(relx=0.5, rely=0.254, anchor="center")
+    
+    background_label.image = bg_image
+    
+    def hitung_tagihan(event=None): 
+        id_pesanan = id_pesanan_entry.get().strip()  # Ambil ID Pesanan dan hilangkan spasi
+        pesanan = muat_data()  # Muat data pesanan dari sumber data
+        harga_per_kg = {
+            "Baju": {"Normal": 4000, "Express": 5000},
+            "Selimut/Seprai": {"Normal": 6000, "Express": 8000},
+            "Karpet": {"Normal": 8000, "Express": 12000}
+        }
+    
+        # Cari pesanan berdasarkan ID Pesanan (sebagai kunci dictionary)
+        if id_pesanan in pesanan:
+            # Ambil data pelanggan berdasarkan ID pesanan
+            data_pesanan = pesanan[id_pesanan]
+            nama_pelanggan = data_pesanan['nama_pelanggan']
+            email_pelanggan = data_pesanan['email']
+
+            # Hitung total tagihan
+            total_tagihan = 0
+            tagihan_text = ""
+            
+            for item in data_pesanan['items']:
+                jenis = item["jenis_pakaian"]
+                layanan = item["jenis_layanan"]
+                berat = item["berat"]
+                biaya = berat * harga_per_kg[jenis][layanan]
+                total_tagihan += biaya
+                tagihan_text += f"| {jenis:<15} | {berat:<6}kg | {layanan:<8} | Rp{biaya:>10,} |\n"
+
+            # Ambil tanggal estimasi dari data pesanan
+            tanggal_estimasi = data_pesanan['items'][0]["estimasi_waktu"]
+            tanggal_estimasi = datetime.strptime(tanggal_estimasi, "%m/%d/%y").strftime("%d/%m/%Y")
+            
+            # Buat struk menggunakan data estimasi selesai
+            tanggal_sekarang = datetime.now()
+            tanggal_str = tanggal_sekarang.strftime("%d/%m/%Y")
+            struk = f"""
+========================================================
+                   Swift Clean Laundry
+               Struk Resmi Layanan Laundry
+========================================================
+ID Pesanan      : {id_pesanan}
+Nama Pelanggan  : {nama_pelanggan}
+Tanggal Tagihan : {tanggal_str}
+Estimasi Selesai: {tanggal_estimasi}
+
+--------------------------------------------------------
+| Jenis Pakaian   | Berat    | Layanan  | Biaya        |
+--------------------------------------------------------
+{tagihan_text}
+========================================================
+Total Tagihan   :                         Rp  {total_tagihan:,.1f}
+========================================================
+              Terima Kasih telah menggunakan
+                  Swift Clean Laundry!
+========================================================
+"""
+
+            # Menampilkan tagihan di GUI
+            clear_window(root)
+            
+            tk.Label(root, text="Struk Tagihan", font=("Helvetica", 24, "bold")).pack(pady=10)
+            tk.Label(root, text=struk, font=("Courier", 12), justify="left").pack(pady=10)
+
+            # Simpan struk sebagai gambar
+            nama_file = f"struk_{id_pesanan}.png"  # Ganti nama file dengan ID pesanan
+            buat_gambar_struk(nama_file, id_pesanan, nama_pelanggan, tanggal_str, tanggal_estimasi, tagihan_text, total_tagihan)
+            
+            # Fungsi kirim email
+            def kirim_tagihan():
+                kirim_email_dengan_gambar(nama_file, email_pelanggan)
+                messagebox.showinfo("Email Dikirim", "Struk berhasil dikirim ke email pelanggan!")
+
+            # Menampilkan tombol
+            tk.Button(root, text="Kirim Tagihan via Email", font=("Helvetica", 16), command=kirim_tagihan).pack(pady=5)
+            tk.Button(root, text="Kembali ke Menu", font=("Helvetica", 16), command=menu_admin).pack(side=tk.BOTTOM, pady=10)
+            
+        else:
+            messagebox.showerror("Error", "ID Pesanan tidak ditemukan!")
+
+    tk.Button(root, text="Cari Tagihan", font=("Helvetica", 16), command=hitung_tagihan).place(relx=0.5, rely=0.4, anchor="center")
+    tk.Button(root, text="Kembali ke Menu", font=("Helvetica", 16), command=menu_admin).place(relx=0.5, rely=0.53, anchor="center")
+    root.bind('<Return>', hitung_tagihan)
