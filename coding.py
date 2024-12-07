@@ -91,7 +91,7 @@ def tampilkan_halaman_awal():
     global canvas, bg_image, oval_button, text_button
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
-    bg_image = Image.open(r"background/halaman awal.png")
+    bg_image = Image.open(r"halaman awal.png")
     bg_image = bg_image.resize((screen_width, screen_height), Image.Resampling.LANCZOS)
     bg_image = ImageTk.PhotoImage(bg_image)
     background_label = tk.Label(root, image=bg_image)
@@ -138,7 +138,7 @@ def sign_up():
     screen_height = root.winfo_screenheight()
 
     try:
-        bg_image = Image.open(r"background/sign up.png")
+        bg_image = Image.open(r"sign up.png")
         bg_image = bg_image.resize((screen_width, screen_height), Image.Resampling.LANCZOS)
         bg_image = ImageTk.PhotoImage(bg_image)
     except Exception as e:
@@ -197,7 +197,7 @@ def sign_up():
     root.bind('<Return>', lambda event: buat_akun())
     
     try:
-        leave_photo = Image.open(r"background/logo leave.png")
+        leave_photo = Image.open(r"logo leave.png")
         leave_photo = leave_photo.resize((90, 90), Image.Resampling.LANCZOS)
         leave_image = ImageTk.PhotoImage(leave_photo)
 
@@ -215,7 +215,7 @@ def menu_login():
 
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
-    bg_image = Image.open(r"background/login.png")
+    bg_image = Image.open(r"login.png")
     bg_image = bg_image.resize((screen_width, screen_height), Image.Resampling.LANCZOS)
     bg_image = ImageTk.PhotoImage(bg_image)
     background_label = tk.Label(root, image=bg_image)
@@ -254,7 +254,7 @@ def menu_login():
               relief="flat", cursor="hand2", command=sign_up).place(relx=0.5, rely=0.58, anchor="center")
     
     try:
-        leave_photo = Image.open(r"background/logo leave.png")
+        leave_photo = Image.open(r"logo leave.png")
         leave_photo = leave_photo.resize((90, 90), Image.Resampling.LANCZOS)
         leave_image = ImageTk.PhotoImage(leave_photo)
 
@@ -273,7 +273,7 @@ def menu_admin():
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
 
-    bg_image = Image.open(r"background/menu utama.png")
+    bg_image = Image.open(r"menu utama.png")
     bg_image = bg_image.resize((screen_width, screen_height), Image.Resampling.LANCZOS)
     bg_image = ImageTk.PhotoImage(bg_image)
     
@@ -316,7 +316,7 @@ def tampilkan_tambah_pesanan():
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
     
-    bg_image = Image.open(r"background/tambah pesanan.png")
+    bg_image = Image.open(r"tambah pesanan.png")
     bg_image = bg_image.resize((screen_width, screen_height), Image.Resampling.LANCZOS)
     bg_image = ImageTk.PhotoImage(bg_image)
     
@@ -468,7 +468,7 @@ def tampilkan_pesanan():
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
     
-    bg_image = Image.open(r"background/daftar pesanan.png")
+    bg_image = Image.open(r"daftar pesanan.png")
     bg_image = bg_image.resize((screen_width, screen_height), Image.Resampling.LANCZOS)
     bg_image = ImageTk.PhotoImage(bg_image)
     
@@ -574,7 +574,7 @@ def tampilkan_tagihan():
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
     
-    bg_image = Image.open(r"background/cetak tagihan.png")
+    bg_image = Image.open(r"cetak tagihan.png")
     bg_image = bg_image.resize((screen_width, screen_height), Image.Resampling.LANCZOS)
     bg_image = ImageTk.PhotoImage(bg_image)
     
@@ -644,7 +644,7 @@ Estimasi Selesai: {tanggal_estimasi}
             screen_width = root.winfo_screenwidth()
             screen_height = root.winfo_screenheight()
     
-            bg_image = Image.open(r"background/struk tagihan.png")
+            bg_image = Image.open(r"struk tagihan.png")
             bg_image = bg_image.resize((screen_width, screen_height), Image.Resampling.LANCZOS)
             bg_image = ImageTk.PhotoImage(bg_image)
     
@@ -688,11 +688,11 @@ def buat_gambar_struk(nama_file, id_pesanan, nama_pelanggan, tanggal_str, tangga
         jumlah_jenis_pakaian = len(jenis_pakaian)
 
     if jumlah_jenis_pakaian == 1:
-        img = Image.open(r"background/struk1.png")  
+        img = Image.open(r"struk1.png")  
     elif jumlah_jenis_pakaian == 2:
-        img = Image.open(r"background/struk2.png") 
+        img = Image.open(r"struk2.png") 
     else:
-        img = Image.open(r"background/struk.png")
+        img = Image.open(r"struk.png")
 
     draw = ImageDraw.Draw(img)
 
