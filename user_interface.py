@@ -239,8 +239,6 @@ def menu_admin(root):
     tk.Button(root, text="Tampilkan Semua Pesanan", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: tampilkan_pesanan(root)).place(relx=0.5, rely=0.324, anchor="center")
     tk.Button(root, text="Cetak Tagihan", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: tampilkan_tagihan(root)).place(relx=0.5, rely=0.412, anchor="center")
     tk.Button(root, text="Logout", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: logout(root)).place(relx=0.5, rely=0.5, anchor="center")
-        
-    root.bind('<Return>', lambda event: logout())
 
 def tampilkan_tambah_pesanan(root):
     clear_window(root)
