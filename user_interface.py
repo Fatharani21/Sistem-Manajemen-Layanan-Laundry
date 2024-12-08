@@ -239,18 +239,6 @@ def menu_admin(root):
     tk.Button(root, text="Tampilkan Semua Pesanan", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: tampilkan_pesanan(root)).place(relx=0.5, rely=0.324, anchor="center")
     tk.Button(root, text="Cetak Tagihan", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: tampilkan_tagihan(root)).place(relx=0.5, rely=0.412, anchor="center")
     tk.Button(root, text="Logout", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: logout(root)).place(relx=0.5, rely=0.5, anchor="center")
-
-    try:
-        leave_photo = Image.open(r"logo leave.png")
-        leave_photo = leave_photo.resize((90, 90), Image.Resampling.LANCZOS)
-        leave_image = ImageTk.PhotoImage(leave_photo)
-
-        leave_button = tk.Button(root, image=leave_image, command=lambda: leave(root), bd=0, relief="flat",
-                                 activebackground="#f0f0f0", cursor="hand2")
-        leave_button.place(relx=0.031, rely=0.105, anchor="w")
-        root.leave_image = leave_image
-    except Exception as e:
-        print(f"Error loading leave button image: {e}")
         
     root.bind('<Return>', lambda event: logout())
 
