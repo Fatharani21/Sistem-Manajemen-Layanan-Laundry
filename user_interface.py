@@ -6,19 +6,20 @@ import os
 import sys
 from tkinter import ttk, messagebox
 from tkcalendar import Calendar
-from datetime import datetime, timedelta
+from datetime import datetime
 from PIL import Image, ImageTk, ImageDraw, ImageFont
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 import smtplib
-from tkinter import Label, Frame, Entry, StringVar, BooleanVar, Checkbutton, OptionMenu
-from data import buat_id_pesanan, muat_data_akun,  muat_data_pesanan, simpan_data_akun, current_user
-from validasi import validasi_akun_baru, validasi_login, validasi_tanggal, validasi_nama_pelanggan, validasi_email, validasi_jenis_pakaian, validasi_layanan
+from tkinter import Label, Frame, Entry, BooleanVar, Checkbutton
+from data import buat_id_pesanan, muat_data_akun,  muat_data_pesanan, simpan_data_akun, current_user, buat_folder_dan_file_akun, load_harga, save_harga
+from validasi import validasi_akun_baru, validasi_login, validasi_tanggal, validasi_nama_pelanggan, validasi_email, validasi_jenis_pakaian, validasi_layanan, validasi_harga
 
 os.environ["TCL_LIBRARY"] = r"C:\Program Files\Python313\tcl\tcl8.6"
 os.environ["TK_LIBRARY"] = r"C:\Program Files\Python313\tcl\tk8.6"
+
 global root
 def logout(root):
     global current_user
@@ -40,12 +41,6 @@ def clear_window(window):
                 widget.destroy()
     except tk.TclError:
         pass  
-    
-def menu_login():
-    print("Tombol 'Mulai' ditekan!") 
-
-def on_click(event):
-    menu_login()
 
 def on_hover(event):
     canvas.itemconfig(oval_button, fill="#FF99CC") 
@@ -144,6 +139,7 @@ def sign_up(root):
         user_data = {"password": password}
         users[username] = user_data
         simpan_data_akun(username, user_data)
+        buat_folder_dan_file_akun(username)
 
         messagebox.showinfo("Success", "Akun berhasil dibuat. Silakan login.")
         menu_login(root)             
@@ -235,10 +231,81 @@ def menu_admin(root):
     background_label.place(relwidth=1, relheight=1)
     background_label.image = bg_image
 
-    tk.Button(root, text="Tambah Pesanan", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: tampilkan_tambah_pesanan(root)).place(relx=0.5, rely=0.235, anchor="center")
-    tk.Button(root, text="Tampilkan Semua Pesanan", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: tampilkan_pesanan(root)).place(relx=0.5, rely=0.324, anchor="center")
-    tk.Button(root, text="Cetak Tagihan", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: tampilkan_tagihan(root)).place(relx=0.5, rely=0.412, anchor="center")
-    tk.Button(root, text="Logout", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: logout(root)).place(relx=0.5, rely=0.5, anchor="center")
+    tk.Button(root, text="Kelola Harga", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: kelola_harga(root)).place(relx=0.5, rely=0.228, anchor="center")
+    tk.Button(root, text="Tambah Pesanan", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: tampilkan_tambah_pesanan(root)).place(relx=0.5, rely=0.318, anchor="center")
+    tk.Button(root, text="Tampilkan Semua Pesanan", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: tampilkan_pesanan(root)).place(relx=0.5, rely=0.400, anchor="center")
+    tk.Button(root, text="Cetak Tagihan", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: tampilkan_tagihan(root)).place(relx=0.5, rely=0.484, anchor="center")
+    tk.Button(root, text="Logout", font=("Helvetica", 15), fg="#9B0067", bg="#EDEDED", relief="flat", activebackground="#FF69B4", activeforeground="white", cursor="hand2", command=lambda: logout(root)).place(relx=0.5, rely=0.578, anchor="center")
+
+def kelola_harga(root):
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    bg_image = Image.open(r"kelola harga.png")
+    bg_image = bg_image.resize((screen_width, screen_height), Image.Resampling.LANCZOS)
+    bg_image = ImageTk.PhotoImage(bg_image)
+    
+    background_label = tk.Label(root, image=bg_image)
+    background_label.place(relwidth=1, relheight=1)
+    background_label.image = bg_image
+    
+    main_frame = tk.Frame(root, bg="#EDEDED", bd=0)
+    main_frame.place(relx=0.5, rely=0.445, anchor="center", relwidth=0.7, relheight=0.38)
+
+    row_start = 1
+
+    tk.Label(main_frame, text="Jenis Pakaian", font=("Helvetica", 14, "bold"), anchor="center", fg="#9B0067", bg="#EDEDED").grid(row=row_start, column=0, padx=10, pady=5)
+    tk.Label(main_frame, text="Normal (per kg)", font=("Helvetica", 14, "bold"), anchor="center", fg="#9B0067", bg="#EDEDED").grid(row=row_start, column=1, padx=10, pady=5)
+    tk.Label(main_frame, text="Express (per kg)", font=("Helvetica", 14, "bold"), anchor="center", fg="#9B0067", bg="#EDEDED").grid(row=row_start, column=2, padx=10, pady=5)
+    tk.Label(main_frame, text="Harga Sebelumnya", font=("Helvetica", 14, "bold"), anchor="center", fg="#9B0067", bg="#EDEDED").grid(row=row_start, column=3, padx=10, pady=5)
+    
+    row_start += 1 
+
+    entries = {} 
+
+    for idx, jenis in enumerate(["Baju", "Selimut/Seprai", "Karpet"]):
+        tk.Label(main_frame, text=jenis, font=("Helvetica", 14), fg="#9B0067", bg="#EDEDED").grid(row=row_start + idx, column=0, padx=10, pady=5, sticky="w")
+
+        normal_entry = tk.Entry(main_frame, width=10)
+        normal_entry.grid(row=row_start + idx, column=1, padx=10, pady=5)
+
+        express_entry = tk.Entry(main_frame, width=10)
+        express_entry.grid(row=row_start + idx, column=2, padx=10, pady=5)
+        
+        harga = load_harga()  
+        harga_sebelumnya = harga.get(jenis, {"Normal": 0, "Express": 0})
+        tk.Label(main_frame, text=f"Normal: Rp{harga_sebelumnya['Normal']}, Express: Rp{harga_sebelumnya['Express']}",
+                 font=("Helvetica", 14), bg="#EDEDED", fg="gray", justify="right").grid(row=row_start + idx, column=3, padx=10, pady=5, sticky="w")
+
+        entries[jenis] = {"Normal": normal_entry, "Express": express_entry}
+
+    def simpan_harga():
+        harga_baru = {}
+        for jenis, fields in entries.items():
+            normal = fields["Normal"].get().strip()
+            express = fields["Express"].get().strip()
+
+            if not validasi_harga(normal, express, jenis):
+                return
+
+            harga_baru[jenis] = {"Normal": int(normal), "Express": int(express)}
+
+        save_harga(harga_baru)
+        messagebox.showinfo("Berhasil", "Harga berhasil diperbarui!")
+        menu_admin(root)
+
+    frame_tombol = tk.Frame(main_frame, bg="#EDEDED")
+    frame_tombol.grid(row=row_start + len(entries), column=0, columnspan=30, pady=60)
+
+    simpan_button = tk.Button(frame_tombol, text="Simpan Harga", font=("Helvetica", 15), bg="#FF69B4", fg="white", width=15, 
+                              bd=0, relief="flat", activebackground="#D1006F", activeforeground="white", cursor="hand2", command=simpan_harga)
+    simpan_button.pack(side=tk.RIGHT, padx=15, expand=True)
+
+    menu_button = tk.Button(frame_tombol, text="Kembali ke Menu", font=("Helvetica", 15), bg="#FF69B4", fg="white", width=15, 
+                            bd=0, relief="flat", activebackground="#D1006F", activeforeground="white", cursor="hand2", command=lambda: menu_admin(root))
+    menu_button.pack(side=tk.LEFT, padx=15, expand=True)
+
+    root.bind('<Return>', lambda event: simpan_harga())
 
 def tampilkan_tambah_pesanan(root):
     clear_window(root)
@@ -334,12 +401,8 @@ def tampilkan_tambah_pesanan(root):
             "jenis_layanan": layanan,
             "estimasi_waktu": estimasi_waktu
         }
-
-        folder_path = f"user_data/{current_user}"
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
-
-        pesanan_file = f"{folder_path}/{current_user}_pesanan.json"
+        
+        pesanan_file = f"user_data/{current_user}/{current_user}_pesanan.json"
 
         try:
             with open(pesanan_file, "r") as f:
@@ -479,12 +542,8 @@ def tampilkan_tagihan(root):
     def hitung_tagihan(event=None): 
         id_pesanan = id_pesanan_entry.get().strip() 
         pesanan = muat_data_pesanan(current_user) 
-        harga_per_kg = {
-            "Baju": {"Normal": 4000, "Express": 5000},
-            "Selimut/Seprai": {"Normal": 6000, "Express": 8000},
-            "Karpet": {"Normal": 8000, "Express": 12000}
-        }
-
+        harga_per_kg = load_harga()
+        
         if id_pesanan in pesanan:
             data_pesanan = pesanan[id_pesanan]
             nama_pelanggan = data_pesanan['nama_pelanggan']
