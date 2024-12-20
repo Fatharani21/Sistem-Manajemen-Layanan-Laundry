@@ -60,32 +60,42 @@ def validasi_layanan(layanan):
 
 def validasi_jenis_pakaian(jenis_pakaian_values, berat_entries, layanan, estimasi_waktu):
     if not isinstance(jenis_pakaian_values, dict) or not isinstance(berat_entries, dict):
-        return False, "Data jenis pakaian atau berat tidak valid!"  # Mengembalikan error jika data tidak valid
+        return False, "Data jenis pakaian atau berat tidak valid!"  
 
-    pakaian_terpilih = []  # List untuk menyimpan item pakaian yang valid
+    pakaian_terpilih = []  
     pesan_error = ""
 
     for jenis, var in jenis_pakaian_values.items():
-        if var.get():  # Memeriksa apakah jenis pakaian dipilih
-            berat = berat_entries.get(jenis, None)  # Mengambil input berat untuk jenis pakaian tersebut
-            if berat is None or not berat.get():  # Memeriksa apakah input berat diisi
-                pesan_error = f"Berat untuk {jenis} harus diisi!"  # Error jika berat kosong
+        if var.get():  
+            berat = berat_entries.get(jenis, None)  
+            if berat is None or not berat.get():  
+                pesan_error = f"Berat untuk {jenis} harus diisi!"  
                 return False, pesan_error
             
-            # Cek apakah berat yang dimasukkan berupa angka
-            if berat.get().isdigit():  # Pastikan berat berupa angka
+            if berat.get().isdigit():  
                 pakaian_terpilih.append({
                     "jenis_pakaian": jenis,
-                    "berat": float(berat.get()),  # Mengonversi berat menjadi float
+                    "berat": float(berat.get()),  
                     "jenis_layanan": layanan,
                     "estimasi_waktu": estimasi_waktu
                 })
             else:
-                pesan_error = f"Berat untuk {jenis} harus berupa angka!"  # Error jika berat bukan angka
+                pesan_error = f"Berat untuk {jenis} harus berupa angka!"  
                 return False, pesan_error
 
-    if not pakaian_terpilih:  # Jika tidak ada jenis pakaian yang dipilih
-        pesan_error = "Pilih jenis pakaian terlebih dahulu!"  # Error jika tidak ada jenis pakaian yang dipilih
+    if not pakaian_terpilih:  
+        pesan_error = "Pilih jenis pakaian terlebih dahulu!"  
         return False, pesan_error
 
     return pakaian_terpilih, None 
+
+def validasi_harga(normal, express, jenis):
+    if not normal or not express:
+        messagebox.showerror("Error", f"Kolom untuk {jenis} tidak boleh kosong!")
+        return False
+    
+    if not normal.isdigit() or not express.isdigit():
+        messagebox.showerror("Error", f"Input untuk {jenis} harus berupa angka!")
+        return False
+
+    return True
