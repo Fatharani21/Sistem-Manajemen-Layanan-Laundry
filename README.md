@@ -25,3 +25,6 @@ Flowchart dimulai dengan "Sign Up", pengguna mendaftarkan akun baru dengan memas
 # Site Map
 ![Sitemap_Sistem_Manajemen_Layanan_Laundry](https://github.com/Fatharani21/Sistem-Manajemen-Layanan-Laundry/blob/main/Site%20Map.png)
 
+# Site Map Revisi (1)
+![Sitemap_Sistem_Manajemen_Layanan_Laundry](https://github.com/Fatharani21/Sistem-Manajemen-Layanan-Laundry/blob/main/Revisi_SiteMap.png)
+
