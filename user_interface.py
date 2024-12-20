@@ -1,10 +1,8 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
 import json
 import os
 import sys
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, Label, Frame, Entry, BooleanVar, Checkbutton
 from tkcalendar import Calendar
 from datetime import datetime
 from PIL import Image, ImageTk, ImageDraw, ImageFont
@@ -13,7 +11,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 import smtplib
-from tkinter import Label, Frame, Entry, BooleanVar, Checkbutton
 from data import buat_id_pesanan, muat_data_akun,  muat_data_pesanan, simpan_data_akun, current_user, buat_folder_dan_file_akun, load_harga, save_harga
 from validasi import validasi_akun_baru, validasi_login, validasi_tanggal, validasi_nama_pelanggan, validasi_email, validasi_jenis_pakaian, validasi_layanan, validasi_harga
 
