@@ -1,7 +1,7 @@
 from user_interface import tampilkan_halaman_awal
 import tkinter as tk
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     root = tk.Tk()
     root.title("Swift Clean")
     root.state('zoomed')  
@@ -9,3 +9,4 @@ if _name_ == "_main_":
 
     tampilkan_halaman_awal(root)  
     root.mainloop()
+
