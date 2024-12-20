@@ -16,6 +16,19 @@ def muat_data_akun():
             with open(DATA_FILE, "w") as f:
                 json.dump({}, f, indent=4)
             return {}
+    
+def buat_folder_dan_file_akun(username):
+    folder_base = "user_data"
+    user_folder = os.path.join(folder_base, username)
+
+    if not os.path.exists(user_folder):
+        os.makedirs(user_folder)
+
+    pesanan_file = os.path.join(user_folder, f"{username}_pesanan.json")
+    if not os.path.exists(pesanan_file):
+        with open(pesanan_file, "w") as file:
+            json.dump({}, file, indent=4)
+        
 
 def simpan_data_akun(username, user_data):
     users = muat_data_akun()
@@ -55,5 +68,22 @@ def buat_id_pesanan(username):
         new_id = "001" 
     return new_id
 
+def load_harga():
+    isi_awal = {
+        "Baju": {"Normal": 4000, "Express": 5000},
+        "Selimut/Seprai": {"Normal": 6000, "Express": 8000},
+        "Karpet": {"Normal": 8000, "Express": 12000}
+    }
+    if os.path.exists("harga.json"):
+        try:
+            with open("harga.json", "r") as file:
+                return json.load(file)
+        except json.JSONDecodeError:
+            return isi_awal  
+    else:
+        save_harga(isi_awal)  
+        return isi_awal
 
-        
+def save_harga(harga):
+    with open("harga.json", "w") as file:
+        json.dump(harga, file, indent=4)
